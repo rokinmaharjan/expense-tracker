@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.expensetracker.AppCommons;
 import com.example.expensetracker.R;
@@ -80,18 +81,28 @@ public class EditItemDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String name = itemName.getText().toString();
-                        float price = Float.valueOf(itemPrice.getText().toString());
-                        int year = Integer.parseInt(yearSpinner.getSelectedItem().toString());
-                        int month = DateUtils.getMonthNumberFromMonthName(monthSpinner.getSelectedItem().toString());
+                        String priceString = itemPrice.getText().toString();
 
-                        item.setName(name);
-                        item.setPrice(price);
-                        item.setYear(year);
-                        item.setMonth(month);
+                        if (name.isEmpty()) {
+                            Toast toast = Toast.makeText(getContext(), "Please enter item name", Toast.LENGTH_SHORT);
+                            toast.show();
+                        } else if (priceString.isEmpty()) {
+                            Toast toast = Toast.makeText(getContext(), "Please enter item price", Toast.LENGTH_SHORT);
+                            toast.show();
+                        } else {
+                            float price = Float.valueOf(priceString);
+                            int year = Integer.parseInt(yearSpinner.getSelectedItem().toString());
+                            int month = DateUtils.getMonthNumberFromMonthName(monthSpinner.getSelectedItem().toString());
 
-                        AppCommons.getItemRepository().update(item);
+                            item.setName(name);
+                            item.setPrice(price);
+                            item.setYear(year);
+                            item.setMonth(month);
 
-                        itemsAdapter.notifyItemChanged(itemPosition);
+                            AppCommons.getItemRepository().update(item);
+
+                            itemsAdapter.notifyItemChanged(itemPosition);
+                        }
                     }
                 });
 

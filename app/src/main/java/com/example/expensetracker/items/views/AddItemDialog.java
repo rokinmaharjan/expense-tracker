@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.expensetracker.AppCommons;
 import com.example.expensetracker.R;
@@ -77,17 +78,27 @@ public class AddItemDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String name = itemName.getText().toString();
-                        float price = Float.valueOf(itemPrice.getText().toString());
-                        int year = Integer.parseInt(yearSpinner.getSelectedItem().toString());
-                        int month = DateUtils.getMonthNumberFromMonthName(monthSpinner.getSelectedItem().toString());
-                        String itemType = itemTypeSpinner.getSelectedItem().toString();
+                        String priceString = itemPrice.getText().toString();
 
-                        Item item = new Item(name, price, year, month, itemType);
+                        if (name.isEmpty()) {
+                            Toast toast = Toast.makeText(getContext(), "Please enter item name", Toast.LENGTH_SHORT);
+                            toast.show();
+                        } else if (priceString.isEmpty()) {
+                            Toast toast = Toast.makeText(getContext(), "Please enter item price", Toast.LENGTH_SHORT);
+                            toast.show();
+                        } else {
+                            float price = Float.valueOf(priceString);
+                            int year = Integer.parseInt(yearSpinner.getSelectedItem().toString());
+                            int month = DateUtils.getMonthNumberFromMonthName(monthSpinner.getSelectedItem().toString());
+                            String itemType = itemTypeSpinner.getSelectedItem().toString();
 
-                        AppCommons.getItemRepository().add(item);
+                            Item item = new Item(name, price, year, month, itemType);
 
-                        items.add(item);
-                        itemsAdapter.notifyItemInserted(items.size());
+                            AppCommons.getItemRepository().add(item);
+
+                            items.add(item);
+                            itemsAdapter.notifyItemInserted(items.size());
+                        }
                     }
                 });
 
